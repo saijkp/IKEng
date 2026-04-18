@@ -65,17 +65,23 @@
 
                 data.forEach(item => {
                     resDiv.innerHTML += `
-                        <div class="card">
-                            <div class="img-box"><img src="${item.img}" referrerpolicy="no-referrer"></div>
-                            <div class="info">
-                                <div class="badge">UK COMPLIANT TREND</div>
-                                <h3>${item.title}</h3>
-                                <div class="price-grid">
-                                    <div class="p-item"><label>FACTORY (CNY)</label><span>¥${item.price_cny}</span></div>
-                                    <div class="p-item"><label>FACTORY (GBP)</label><span>£${item.factory_gbp}</span></div>
-                                    <div class="p-item"><label>LANDED MCR</label><span style="color:var(--success)">£${item.landed_gbp}</span></div>
-                                </div>
-                            </div>
+    <div class="card">
+        <div class="img-box"><img src="${item.img}" referrerpolicy="no-referrer"></div>
+        <div class="info">
+            <div class="badge">AMAZON UK FBA OPPORTUNITY</div>
+            <h3>${item.title}</h3>
+            <div class="price-grid">
+                <div class="p-item"><label>LANDED COST</label><span>£${item.landed_gbp}</span></div>
+                <div class="p-item"><label>EST. RETAIL</label><span>£${item.est_retail}</span></div>
+                <div class="p-item"><label>NET PROFIT</label><span style="color:var(--success)">£${item.net_profit}</span></div>
+                <div class="p-item"><label>ROI</label><span style="color:var(--accent)">${item.roi}</span></div>
+            </div>
+        </div>
+        <div class="cta-group">
+            <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">AUDIT FACTORY</a>
+        </div>
+    </div>
+`;
                             <div class="cta-group">
                                 <a href="https://wa.me/447767990007" target="_blank" class="btn btn-wa">WHATSAPP QUOTE</a>
                                 <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">VIEW ON 1688</a>
