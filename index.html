@@ -21,10 +21,10 @@
         .img-box img { width: 100%; height: 100%; object-fit: cover; }
         .info h3 { margin: 0 0 12px; font-size: 0.95rem; line-height: 1.4; text-transform: capitalize; }
         .badge { background: #eef2ff; color: #4338ca; font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
-        .price-grid { display: flex; justify-content: space-between; background: #f9fafb; padding: 12px; border-radius: 8px; }
-        .p-item { text-align: center; }
+        .price-grid { display: flex; justify-content: space-between; background: #f9fafb; padding: 12px; border-radius: 8px; gap: 10px; }
+        .p-item { text-align: center; flex: 1; }
         .p-item label { display: block; font-size: 0.6rem; color: #6b7280; font-weight: 700; margin-bottom: 4px; }
-        .p-item span { font-size: 1.1rem; font-weight: 800; }
+        .p-item span { font-size: 1rem; font-weight: 800; }
         .cta-group { display: flex; flex-direction: column; gap: 8px; border-left: 1px solid #eee; padding-left: 20px; }
         .btn { display: block; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
         .btn-wa { background: #25d366; color: white; }
@@ -37,10 +37,10 @@
     <nav><div class="logo">IK ENG <span>UK TERMINAL</span></div></nav>
     <div class="hero">
         <form onsubmit="event.preventDefault(); search();" class="search-box">
-            <input type="text" id="query" placeholder="e.g. Oak Parquet, Brass Handles..." autocomplete="off">
-            <button type="submit">AUDIT UK COST</button>
+            <input type="text" id="query" placeholder="Search products for Amazon UK..." autocomplete="off">
+            <button type="submit">AUDIT PROFIT</button>
         </form>
-        <p id="loader" class="loader">FILTERING EXPORT-READY FACTORIES...</p>
+        <p id="loader" class="loader">CALCULATING FBA MARGINS...</p>
     </div>
     <div id="results"></div>
 
@@ -50,48 +50,45 @@
             const resDiv = document.getElementById('results');
             const loader = document.getElementById('loader');
             if(!q) return;
+            
             resDiv.innerHTML = '';
             loader.style.display = 'block';
 
             try {
-                const response = await fetch('/.netlify/functions/search?q=' + encodeURIComponent(q));
+                // Hits the 'search.js' function in your netlify/functions folder
+                const response = await fetch('/api/search?q=' + encodeURIComponent(q));
                 const data = await response.json();
                 loader.style.display = 'none';
 
                 if(!data || data.length === 0) {
-                    resDiv.innerHTML = '<div style="text-align:center;padding:40px;background:white;border-radius:12px;">No compliant items found. Try refining the keyword.</div>';
+                    resDiv.innerHTML = '<div style="text-align:center;padding:40px;background:white;border-radius:12px;">No profitable items found. Try a different keyword.</div>';
                     return;
                 }
 
                 data.forEach(item => {
                     resDiv.innerHTML += `
-    <div class="card">
-        <div class="img-box"><img src="${item.img}" referrerpolicy="no-referrer"></div>
-        <div class="info">
-            <div class="badge">AMAZON UK FBA OPPORTUNITY</div>
-            <h3>${item.title}</h3>
-            <div class="price-grid">
-                <div class="p-item"><label>LANDED COST</label><span>£${item.landed_gbp}</span></div>
-                <div class="p-item"><label>EST. RETAIL</label><span>£${item.est_retail}</span></div>
-                <div class="p-item"><label>NET PROFIT</label><span style="color:var(--success)">£${item.net_profit}</span></div>
-                <div class="p-item"><label>ROI</label><span style="color:var(--accent)">${item.roi}</span></div>
-            </div>
-        </div>
-        <div class="cta-group">
-            <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">AUDIT FACTORY</a>
-        </div>
-    </div>
-`;
+                        <div class="card">
+                            <div class="img-box"><img src="${item.img}" referrerpolicy="no-referrer"></div>
+                            <div class="info">
+                                <div class="badge">AMAZON UK FBA OPPORTUNITY</div>
+                                <h3>${item.title}</h3>
+                                <div class="price-grid">
+                                    <div class="p-item"><label>LANDED COST</label><span>£${item.landed_gbp}</span></div>
+                                    <div class="p-item"><label>EST. RETAIL</label><span>£${item.est_retail}</span></div>
+                                    <div class="p-item"><label>NET PROFIT</label><span style="color:var(--success)">£${item.net_profit}</span></div>
+                                    <div class="p-item"><label>ROI</label><span style="color:var(--accent)">${item.roi}</span></div>
+                                </div>
+                            </div>
                             <div class="cta-group">
-                                <a href="https://wa.me/447767990007" target="_blank" class="btn btn-wa">WHATSAPP QUOTE</a>
-                                <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">VIEW ON 1688</a>
+                                <a href="https://wa.me/447767990007" target="_blank" class="btn btn-wa">WHATSAPP AGENT</a>
+                                <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">AUDIT FACTORY</a>
                             </div>
                         </div>
                     `;
                 });
             } catch(e) {
                 loader.style.display = 'none';
-                resDiv.innerHTML = '<div style="text-align:center;color:red;">Audit Failed. Check connection.</div>';
+                resDiv.innerHTML = '<div style="text-align:center;color:red;padding:20px;">Audit Failed. Check API connection.</div>';
             }
         }
     </script>
