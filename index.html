@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer">
+    <title>IK ENG LTD | UK Sourcing Terminal</title>
+    <style>
+        :root { --primary: #0a192f; --accent: #d4af37; --success: #27ae60; --white: #ffffff; }
+        body { font-family: -apple-system, sans-serif; margin: 0; background: #f0f2f5; color: var(--primary); }
+        nav { background: var(--white); padding: 1rem; display: flex; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
+        .logo span { color: var(--accent); }
+        .hero { background: var(--primary); color: white; padding: 40px 20px; text-align: center; }
+        .search-box { max-width: 550px; margin: 0 auto; background: white; padding: 6px; border-radius: 50px; display: flex; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .search-box input { flex: 1; border: none; padding: 12px 20px; font-size: 1rem; outline: none; border-radius: 50px; }
+        .search-box button { background: var(--accent); color: var(--primary); border: none; padding: 12px 25px; border-radius: 50px; font-weight: 700; cursor: pointer; }
+        #results { max-width: 950px; margin: -30px auto 50px; padding: 0 15px; }
+        .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; display: grid; grid-template-columns: 180px 1fr 220px; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); align-items: center; border: 1px solid #eee; }
+        .img-box { width: 180px; height: 180px; background: #eee; border-radius: 8px; overflow: hidden; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+        .info h3 { margin: 0 0 12px; font-size: 0.95rem; line-height: 1.4; text-transform: capitalize; }
+        .badge { background: #eef2ff; color: #4338ca; font-size: 0.65rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
+        .price-grid { display: flex; justify-content: space-between; background: #f9fafb; padding: 12px; border-radius: 8px; }
+        .p-item { text-align: center; }
+        .p-item label { display: block; font-size: 0.6rem; color: #6b7280; font-weight: 700; margin-bottom: 4px; }
+        .p-item span { font-size: 1.1rem; font-weight: 800; }
+        .cta-group { display: flex; flex-direction: column; gap: 8px; border-left: 1px solid #eee; padding-left: 20px; }
+        .btn { display: block; text-align: center; padding: 12px; border-radius: 6px; text-decoration: none; font-weight: 700; font-size: 0.8rem; }
+        .btn-wa { background: #25d366; color: white; }
+        .btn-1688 { background: #111827; color: white; }
+        .loader { text-align: center; color: white; display: none; margin-bottom: 15px; font-size: 0.9rem; font-weight: 600; }
+        @media (max-width: 768px) { .card { grid-template-columns: 1fr; } .cta-group { border-left: none; padding-left: 0; border-top: 1px solid #eee; padding-top: 20px; } .img-box { margin: 0 auto; width: 100%; height: 220px; } }
+    </style>
+</head>
+<body>
+    <nav><div class="logo">IK ENG <span>UK TERMINAL</span></div></nav>
+    <div class="hero">
+        <form onsubmit="event.preventDefault(); search();" class="search-box">
+            <input type="text" id="query" placeholder="e.g. Oak Parquet, Brass Handles..." autocomplete="off">
+            <button type="submit">AUDIT UK COST</button>
+        </form>
+        <p id="loader" class="loader">FILTERING EXPORT-READY FACTORIES...</p>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        async function search() {
+            const q = document.getElementById('query').value;
+            const resDiv = document.getElementById('results');
+            const loader = document.getElementById('loader');
+            if(!q) return;
+            resDiv.innerHTML = '';
+            loader.style.display = 'block';
+
+            try {
+                const response = await fetch('/.netlify/functions/search?q=' + encodeURIComponent(q));
+                const data = await response.json();
+                loader.style.display = 'none';
+
+                if(!data || data.length === 0) {
+                    resDiv.innerHTML = '<div style="text-align:center;padding:40px;background:white;border-radius:12px;">No compliant items found. Try refining the keyword.</div>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    resDiv.innerHTML += `
+                        <div class="card">
+                            <div class="img-box"><img src="${item.img}" referrerpolicy="no-referrer"></div>
+                            <div class="info">
+                                <div class="badge">UK COMPLIANT TREND</div>
+                                <h3>${item.title}</h3>
+                                <div class="price-grid">
+                                    <div class="p-item"><label>FACTORY (CNY)</label><span>¥${item.price_cny}</span></div>
+                                    <div class="p-item"><label>FACTORY (GBP)</label><span>£${item.factory_gbp}</span></div>
+                                    <div class="p-item"><label>LANDED MCR</label><span style="color:var(--success)">£${item.landed_gbp}</span></div>
+                                </div>
+                            </div>
+                            <div class="cta-group">
+                                <a href="https://wa.me/447767990007" target="_blank" class="btn btn-wa">WHATSAPP QUOTE</a>
+                                <a href="${item.link}" target="_blank" rel="noreferrer" class="btn btn-1688">VIEW ON 1688</a>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch(e) {
+                loader.style.display = 'none';
+                resDiv.innerHTML = '<div style="text-align:center;color:red;">Audit Failed. Check connection.</div>';
+            }
+        }
+    </script>
+</body>
+</html>
